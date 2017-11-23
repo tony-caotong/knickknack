@@ -18,6 +18,13 @@ struct flow{
 	uint64_t key4;
 };
 
+void count()
+{
+	static int id = 0;
+	id++;
+	printf("id: %d\n", id);
+}
+
 int main(int argc, char** argv)
 {
 	myint m;
@@ -46,6 +53,10 @@ int main(int argc, char** argv)
 	printf("Key2: %d\n", sizeof(((struct flow*)NULL)->key2));
 	printf("Key3: %d\n", sizeof(((struct flow*)NULL)->key3));
 	printf("Key4: %d\n", sizeof(((struct flow*)NULL)->key4));
+
+	int i;
+	for (i = 0; i < 100; i++)
+		count();
 
 	return 0;
 }
