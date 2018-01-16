@@ -1,4 +1,7 @@
 
+CFLAGS += -fsanitize=address
+LDLIBS += -lasan
+
 wordexp: wordexp.o
 
 clean:

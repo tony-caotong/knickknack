@@ -16,10 +16,10 @@ int main()
 
 	printf("%s\n", p);
 
-//	p[16] = 'x';
+	p[16] = 'x';
 	q = p - 1;
 //	*q = 'y';
-	p--;	
+//	p--;	
 	free(p);
 	printf("hahahahahha\n");
 	return 0;
