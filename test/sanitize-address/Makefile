@@ -1,5 +1,4 @@
-CC=clang
-
+#CC=clang
 all:
 	$(CC) -Wall -fsanitize=address -g -c main.c
 	#gcc -Wall -c main.c
