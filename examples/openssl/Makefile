@@ -10,9 +10,8 @@ epoll:
 	gcc -g -O0 -o epoll -L /root/OUTPUT_openssl_bare/lib/ -Wl,-rpath=/root/OUTPUT_openssl_bare/ -lssl -lcrypto epoll.o
 
 async:
-	echo
-#	gcc -g -O0 -Wall -c async.c -I /root/OUTPUT_openssl_bare/include/
-#	gcc -g -O0 -o async -L /root/OUTPUT_openssl_bare/lib/ -Wl,-rpath=/root/OUTPUT_openssl_bare/ -lssl -lcrypto async.o
+	gcc -g -O0 -Wall -c async.c -I /root/OUTPUT_openssl_bare/include/
+	gcc -g -O0 -o async -L /root/OUTPUT_openssl_bare/lib/ -Wl,-rpath=/root/OUTPUT_openssl_bare/ -lssl -lcrypto async.o
 
 clean:
 	@rm -f *.o block epoll async
