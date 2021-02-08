@@ -1,1 +1,2 @@
-ASAN_OPTIONS="malloc_context_size=2" ./test
+#ASAN_OPTIONS="allow_addr2line=true:malloc_context_size=20" ./test
+ASAN_OPTIONS="disable_coredump=false" ./test

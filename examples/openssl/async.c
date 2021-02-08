@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
@@ -83,7 +84,15 @@ OSSL_ASYNC_FD async_delfd[16];
 
 int main(int argc, char** argv)
 {
-	/* set Engine QAT*/
+    char *p;
+
+    p = getenv("OPENSSL_DEBUG_MEMORY");
+    if (p != NULL && strcmp(p, "on") == 0)
+        CRYPTO_set_mem_debug(1);
+    CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
+
+	/* set Engine QAT 1 */
+	/*
 	ENGINE_load_builtin_engines();
 	ENGINE* eg = ENGINE_by_id("qat");
 	if (eg) {
@@ -92,9 +101,23 @@ int main(int argc, char** argv)
 		ENGINE_set_default(eg, ENGINE_METHOD_ALL);
 	} else {
 		printf("not found qat engine.\n");
+		ERR_print_errors_fp(stderr);
 	}
+	*/
 	const SSL_METHOD* m = TLS_server_method();
 	SSL_CTX* ctx = SSL_CTX_new(m);
+
+	/* set Engine QAT 2 */
+	// use ENGINE there could ignore function: ENGINE_load_builtin_engins()
+	ENGINE* eg = ENGINE_by_id("qat");
+	if (eg) {
+		printf("found qat engine.\n");
+		ENGINE_init(eg);
+		ENGINE_set_default(eg, ENGINE_METHOD_ALL);
+	} else {
+		printf("not found qat engine.\n");
+		ERR_print_errors_fp(stderr);
+	}
 
 	SSL_CTX_set_mode(ctx, SSL_MODE_ASYNC);
 
@@ -171,6 +194,11 @@ int main(int argc, char** argv)
 				}
 
 				SSL* ssl = SSL_new(ctx);
+				if (!ssl) {
+					printf("SSL_new error\n");
+					ERR_print_errors_fp(stderr);
+					goto error;
+				}
 				if (SSL_set_fd(ssl, fd) != 1) {
 					printf("SSL_set_fd error: %s\n",
 						ERR_error_string(SSL_get_error(ssl, e), NULL));
@@ -261,8 +289,12 @@ close:
 					printf("EPOLL del 4: %d\n", fd);
 					free(ev.data.ptr);
 					close(fd);
-					free(priv);
 					printf("closed.\n");
+					int noleak = CRYPTO_mem_leaks_fp(stderr);
+					if (noleak == -1) {
+						printf("noleak noleak.\n");
+						return -1;
+					}
 				} else {
 /* not sure howto here... 
 

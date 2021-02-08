@@ -28,7 +28,7 @@ char* test_buf;
 
 void test4() {
 	printf("i am test3() begin.\n");
-	test_buf[5] = 1;
+	test_buf[5000] = 1;
 	printf("i am test3() end.\n");
 }
 
